@@ -8,46 +8,29 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import org.example.loginpage.dbConnection.DbCOnnection;
+import org.mindrot.jbcrypt.BCrypt;
 
-/**
- * Stage = windows
- * Scene = content of the window
- * Parent = root node of the scene graph (the root node of the FXML file)
- *
- */
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class LoginController {
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
 
-//    public void handleLogin() {
-//        String username = usernameField.getText();
-//        String password = passwordField.getText();
-//
-//        if (username.isEmpty() || password.isEmpty()) {
-//            showAlert("Error", "Please fill in all fields");
-//            return;
-//        }
-//
-//        if (SignupController.users.containsKey(username) &&
-//                SignupController.users.get(username).equals(password)) {
-//            showAlert("Success", "Login successful!");
-//        } else {
-//            showAlert("Error", "Invalid username or password");
-//        }
-//    }
-
+    //Make handleLogin() public so it can be accessed from FXML
     public void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-            showAlert("Error", "Please fill in all fields");
+            showAlert("Error", "Please enter both username and password.");
             return;
         }
 
-        if (SignupController.users.containsKey(username) &&
-                SignupController.users.get(username).equals(password)) {
+        if (validateUser(username, password)) {
             showAlert("Success", "Login successful!");
             openDashboard();
             closeLoginWindow();
@@ -56,8 +39,27 @@ public class LoginController {
         }
     }
 
+    //Fix validateUser() by adding proper logging & closing resources
+    private boolean validateUser(String username, String password) {
+        String query = "SELECT password FROM users WHERE username = ?";
 
+        try (Connection connection = DbCOnnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery(); //Use ResultSet properly
+
+            if (resultSet.next()) {
+                String hashedPassword = resultSet.getString("password");
+                return BCrypt.checkpw(password, hashedPassword); //Check hashed password
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error validating user: " + e.getMessage()); //Better logging
+        }
+
+        return false;
+    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -83,7 +85,10 @@ public class LoginController {
             Parent root = loader.load();
             Stage dashboardStage = new Stage();
             dashboardStage.setTitle("Dashboard");
-            dashboardStage.setScene(new Scene(root, 600, 400));
+
+            // Dynamically set scene size based on FXML
+            Scene scene = new Scene(root);
+            dashboardStage.setScene(scene);
             dashboardStage.show();
         } catch (Exception e) {
             e.printStackTrace();
