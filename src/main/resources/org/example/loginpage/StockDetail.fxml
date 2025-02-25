@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<VBox spacing="15" alignment="CENTER" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.loginpage.controller.StockDetailController">
 
-</AnchorPane>
+    <Label fx:id="stockNameLabel" text="Stock Details" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <Label fx:id="stockSymbolLabel" text="Symbol: " />
+    <Label fx:id="stockPriceLabel" text="Price: $" />
+    <Label fx:id="stockFullNameLabel" text="Full Name: " />
+    <Label fx:id="stockMarketLabel" text="Market: " />
+
+    <Button text="Close" onAction="#handleClose"/>
+</VBox>
