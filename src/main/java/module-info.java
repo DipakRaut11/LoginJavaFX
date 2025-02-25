@@ -1,6 +1,8 @@
 module org.example.loginpage {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
+    requires jbcrypt;
 
 
     opens org.example.loginpage to javafx.fxml;
