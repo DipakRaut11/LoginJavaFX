@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.example.loginpage.timeUpdater.LoginTimeUpdater;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +23,13 @@ public class DashboardController {
     private TextField stockInput;
     @FXML
     private Label stockPriceLabel;
+
+
+    private String loggedInUsername;
+
+    public void setLoggedInUsername(String username) {
+        this.loggedInUsername = username;
+    }
 
     private final Map<String, Stock> stockData = new HashMap<>();
 
@@ -83,10 +92,12 @@ public class DashboardController {
 
     @FXML
     private void handleLogout() {
+        if (loggedInUsername != null) {
+            LoginTimeUpdater.updateLogoutTime(loggedInUsername);
+        }
         Stage stage = (Stage) logoutButton.getScene().getWindow();
         stage.close();
     }
-
     public static class Stock {
         private final String symbol;
         private final String fullName;
