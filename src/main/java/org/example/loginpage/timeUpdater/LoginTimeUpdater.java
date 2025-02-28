@@ -1,6 +1,6 @@
 package org.example.loginpage.timeUpdater;
 
-import org.example.loginpage.dbConnection.DbCOnnection;
+import org.example.loginpage.dbConnection.DbConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,13 +21,14 @@ public class LoginTimeUpdater {
     public static void updateLoginTime(String username) {
         String updateQuery = "UPDATE users SET login_at = ? WHERE username = ?";
 
-        try (Connection connection = DbCOnnection.getConnection();
+        try (Connection connection = DbConnection.getConnection();
              PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
 
             // Set the current time for login_at when user logs in
             LocalDateTime now = LocalDateTime.now();
             System.out.println("Updating login_at for user: " + username + " to " + now);
 
+            //consistency
             updateStatement.setTimestamp(1, java.sql.Timestamp.valueOf(now)); // login_at
             updateStatement.setString(2, username);
 
@@ -47,12 +48,16 @@ public class LoginTimeUpdater {
 
 
     public static void updateLogoutTime(String username) {
-        String query = "UPDATE users SET last_logout_at = NOW() WHERE username = ?";
+        String query = "UPDATE users SET last_logout_at = ? WHERE username = ?";
 
-        try (Connection connection = DbCOnnection.getConnection();
+        try (Connection connection = DbConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, username);
+
+            LocalDateTime now = LocalDateTime.now();
+            statement.setTimestamp(1, java.sql.Timestamp.valueOf(now));
+            statement.setString(2, username);
+
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated > 0) {
@@ -63,4 +68,5 @@ public class LoginTimeUpdater {
             System.err.println("Error updating logout time: " + e.getMessage());
         }
     }
+
 }
