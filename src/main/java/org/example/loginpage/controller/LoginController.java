@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import org.example.loginpage.dbConnection.DbCOnnection;
+import org.example.loginpage.timeUpdater.LoginTimeUpdater;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
@@ -16,11 +17,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The ResultSet in Java is used to hold the data retrieved from a database after executing a query.
+ * It's an object that contains the results of a query execution, which you can iterate through to access
+ * each row of the data returned.
+ *
+ *
+ */
+
 public class LoginController {
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
 
-    //Make handleLogin() public so it can be accessed from FXML
+
     public void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
@@ -31,6 +40,9 @@ public class LoginController {
         }
 
         if (validateUser(username, password)) {
+
+            LoginTimeUpdater.updateLoginTime(username);
+
             showAlert("Success", "Login successful!");
             openDashboard();
             closeLoginWindow();
@@ -39,7 +51,7 @@ public class LoginController {
         }
     }
 
-    //Fix validateUser() by adding proper logging & closing resources
+
     private boolean validateUser(String username, String password) {
         String query = "SELECT password FROM users WHERE username = ?";
 
@@ -47,15 +59,15 @@ public class LoginController {
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery(); //Use ResultSet properly
+            ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
                 String hashedPassword = resultSet.getString("password");
-                return BCrypt.checkpw(password, hashedPassword); //Check hashed password
+                return BCrypt.checkpw(password, hashedPassword);
             }
 
         } catch (SQLException e) {
-            System.err.println("Error validating user: " + e.getMessage()); //Better logging
+            System.err.println("Error validating user: " + e.getMessage());
         }
 
         return false;
@@ -83,19 +95,33 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginpage/dashboard.fxml"));
             Parent root = loader.load();
-            Stage dashboardStage = new Stage();
-            dashboardStage.setTitle("Dashboard");
 
-            // Dynamically set scene size based on FXML
-            Scene scene = new Scene(root);
-            dashboardStage.setScene(scene);
+
+            DashboardController dashboardController = loader.getController();
+            dashboardController.setLoggedInUsername(usernameField.getText());
+
+            Stage dashboardStage = new Stage();
+            dashboardStage.setScene(new Scene(root));
             dashboardStage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
     private void closeLoginWindow() {
+        Stage stage = (Stage) usernameField.getScene().getWindow();
+        stage.close();
+    }
+
+
+    public void handleLogout() {
+        String username = usernameField.getText();
+        if (!username.isEmpty()) {
+           // LoginTimeUpdater.updateLogoutTime(username);
+            closeDashboardWindow();
+        }
+    }
+
+    private void closeDashboardWindow() {
         Stage stage = (Stage) usernameField.getScene().getWindow();
         stage.close();
     }
