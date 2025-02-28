@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DbCOnnection {
+public class DbConnection {
 //    private static  String URL = "jdbc:mysql://localhost:3306/avocado_login";
 //    private static  String USER = "mysql";
 //    private static  String PASSWORD = "root";

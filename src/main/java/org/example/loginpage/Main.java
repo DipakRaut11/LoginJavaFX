@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.loginpage.dbConnection.DbCOnnection;
+import org.example.loginpage.dbConnection.DbConnection;
 import org.example.loginpage.exception.GlobalException;
 
 public class Main extends Application {
@@ -26,7 +26,7 @@ public class Main extends Application {
         }
 
         // Initialize database connection before launching the UI
-        DbCOnnection.init(args[0], args[1], args[2]);
+        DbConnection.init(args[0], args[1], args[2]);
 
 
         launch(args);

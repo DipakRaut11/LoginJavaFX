@@ -8,7 +8,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import org.example.loginpage.dbConnection.DbCOnnection;
+import org.example.loginpage.dbConnection.DbConnection;
 import org.example.loginpage.timeUpdater.LoginTimeUpdater;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -55,7 +55,7 @@ public class LoginController {
     private boolean validateUser(String username, String password) {
         String query = "SELECT password FROM users WHERE username = ?";
 
-        try (Connection connection = DbCOnnection.getConnection();
+        try (Connection connection = DbConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setString(1, username);

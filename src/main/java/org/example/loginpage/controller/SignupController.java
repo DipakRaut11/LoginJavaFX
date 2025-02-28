@@ -7,14 +7,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import org.example.loginpage.dbConnection.DbCOnnection;
+import org.example.loginpage.dbConnection.DbConnection;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -110,7 +109,7 @@ public class SignupController {
         String checkQuery = "SELECT COUNT(*) FROM users WHERE username = ? OR email = ?";
         String insertQuery = "INSERT INTO users (full_name, email, phone, username, password) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connection = DbCOnnection.getConnection();
+        try (Connection connection = DbConnection.getConnection();
              PreparedStatement checkStmt = connection.prepareStatement(checkQuery);
              PreparedStatement insertStmt = connection.prepareStatement(insertQuery)) {
 
