@@ -17,22 +17,22 @@ import java.time.LocalDateTime;
 
 public class LoginTimeUpdater {
 
-    // Method to update login_at when user logs in
+
     public static void updateLoginTime(String username) {
         String updateQuery = "UPDATE users SET login_at = ? WHERE username = ?";
 
         try (Connection connection = DbConnection.getConnection();
              PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
 
-            // Set the current time for login_at when user logs in
+
             LocalDateTime now = LocalDateTime.now();
             System.out.println("Updating login_at for user: " + username + " to " + now);
 
-            //consistency
-            updateStatement.setTimestamp(1, java.sql.Timestamp.valueOf(now)); // login_at
+
+            updateStatement.setTimestamp(1, java.sql.Timestamp.valueOf(now));
             updateStatement.setString(2, username);
 
-            // Update the user record
+
             int rowsUpdated = updateStatement.executeUpdate();
 
             if (rowsUpdated > 0) {
