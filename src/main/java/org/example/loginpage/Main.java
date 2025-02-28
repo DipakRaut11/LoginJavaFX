@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.loginpage.dbConnection.DbCOnnection;
 import org.example.loginpage.exception.GlobalException;
 
 public class Main extends Application {
@@ -18,6 +19,15 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         GlobalException.setGlobalExceptionHandler();
+
+        if (args.length < 3) {
+            System.err.println("Usage:  java -jar YourApp.jar <db_url> <db_user> <db_password>");
+            System.exit(1);
+        }
+
+        // Initialize database connection before launching the UI
+        DbCOnnection.init(args[0], args[1], args[2]);
+
 
         launch(args);
     }
